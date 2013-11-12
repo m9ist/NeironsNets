@@ -36,6 +36,12 @@ public class Neiro {
         }
     }
 
+    /**
+     * активационная функция для получения результата работы сети
+     *
+     * @param x
+     * @return
+     */
     public double activationFunction(double x) {
         return x > 0.75 ? 1.0 : 0;
     }
@@ -51,6 +57,17 @@ public class Neiro {
                 res[j] += weights[j][i] * inc[i];
             }
             res[j] = activationFunction(res[j]);
+        }
+        return res;
+    }
+
+    public static double[] makeSubtract(double[] from, double[] to) throws InvalidArgumentException {
+        if (from.length != to.length) {
+            throw new InvalidArgumentException(new String[]{"Размеры массивов не совпадают."});
+        }
+        double[] res = new double[from.length];
+        for (int i = 0; i < from.length; i++) {
+            res[i] = from[i] - to[i];
         }
         return res;
     }

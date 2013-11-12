@@ -3,25 +3,40 @@ import com.sun.javaws.exceptions.InvalidArgumentException;
 public class Main {
     // http://habrahabr.ru/post/198268/
     public static void main(String[] args) throws InvalidArgumentException {
-        final int in = 11;
-        final int out = 10;
-        final Neiro neiro = new Neiro(in, out);
+        final int inSize = 11;
+        final int innerSize = 20;
+        final int outSize = 10;
+        // внешняя сеть
+        final Neiro neiroIn = new Neiro(inSize, innerSize) {
+            @Override
+            public double activationFunction(double x) {
+                return 1.0 / (1 + Math.exp(-x));
+            }
+        };
+        // выходная сеть
+        final Neiro neiroOut = new Neiro(innerSize, outSize);
 
         final int[] numbers = {0, 9};
 
         // начинаем обучение
-        final double[] arrIn = new double[in];
-        final int[] arrOut = new int[out];
+        final double[] arrIn = new double[inSize];
+        final double[] arrOut = new double[outSize];
 
         for (int steps = 0; steps < 1000; steps++) {
             for (int i : numbers) {
                 nullArray(arrOut);
                 fillNumber(i, arrIn);
                 arrOut[i] = 1;
-                double[] res = neiro.activate(arrIn);
+                double[] res = neiroIn.activate(arrIn);
+                double[] res2 = neiroOut.activate(res);
+                double[] diff = Neiro.makeSubtract(arrOut, res2);
+                // теперь нам надо провести обучение на основе diff
                 //todo: отсюда
             }
         }
+
+
+        /*
         for (int step : numbers) {
             fillNumber(step, arrIn);
             System.out.print("Step is " + step + ":");
@@ -33,6 +48,7 @@ public class Main {
             }
             System.out.println();
         }
+        */
     }
 
     private static void nullArray(double[] arr) {
